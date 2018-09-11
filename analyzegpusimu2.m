@@ -8,7 +8,7 @@
 
 %% Load  the previous results
 clearvars
-%Establish the value na=???
+%See for na??
 na=100;
 load(sprintf('tiempocpu%d.mat',na))
 load(sprintf('tiempogpu%d.mat',na))
@@ -18,41 +18,63 @@ load(sprintf('tiempogpu%d.mat',na))
 %suma de tiempos
 tiempocpu=squeeze(cputime);
 tiempogpu=squeeze(naiveGPUTime);
+sumcpu=sum(tiempocpu,2);
+sumgpu=sum(tiempogpu,2);
+
 %Figure 1
+%computational time for cpu and gpu versus sample size
 %Percentage that GPU is faster than CPU        
 figure
-subplot(3,1,1)
-plot(m,tiempocpu(:,1)./tiempogpu(:,1),'-k'), title('Parallelization'), ylabel(' GPUx faster')
-subplot(3,1,2)
-plot(m,tiempocpu(:,2)./tiempogpu(:,2),'-k'), title('Optimization'), ylabel(' GPUx faster')
-subplot(3,1,3)
-plot(m,tiempocpu(:,3)./tiempogpu(:,3),'-k'), title('Forecasting'),
-xlabel('sample size'), ylabel('GPUx faster')
-print -depsc gpufastercpuna50
+plot(m,sumcpu,'--k',m,sumgpu,'-k'), 
+xlabel('Length of time series (m)'), ylabel('Total computational time')
+legend('CPU','GPU','location','NorthWest')
+print -depsc simu2_na_100
+
+
 
 
 %Figure 2
+%Percentage that GPU is faster than CPU        
+figure
+subplot(3,2,1)
+plot(m,tiempocpu(:,1)./tiempogpu(:,1),'-k'), title('Parallelization'), ylabel(' GPUx faster')
+grid
+subplot(3,2,3)
+plot(m,tiempocpu(:,2)./tiempogpu(:,2),'-k'), title('Optimization'), ylabel(' GPUx faster')
+grid
+subplot(3,2,5)
+plot(m,tiempocpu(:,3)./tiempogpu(:,3),'-k'), title('Forecasting'),
+grid
+xlabel('Length of time series (m)'), ylabel('GPUx faster')
+% print -depsc gpufastercpuna50
+
+
+
 %Analyze the evolution of the computational time versus sample size
 %We can see what is the sample size where GPU is faster than CPU
 
-figure
-subplot(3,1,1)
+% figure
+subplot(3,2,2)
 loglog(m,cputime(:,1,1),'--k',m,naiveGPUTime(:,1,1),'-k','linewidth',1.2)
+grid
 ylabel('Computational time'), 
 title('Parallelization')
 % legend('cpu','gpu','location','bestoutside'),
 
-subplot(3,1,2)
+subplot(3,2,4)
 loglog(m,cputime(:,1,2),'--k',m,naiveGPUTime(:,1,2),'-k','linewidth',1.2)
+grid
 ylabel('Computational time'), 
 title('Optimization')
 % legend('cpu','gpu','location','bestoutside'),
 
-subplot(3,1,3)
+subplot(3,2,6)
 loglog(m,cputime(:,1,3),'--k',m,naiveGPUTime(:,1,3),'-k','linewidth',1.2)
-ylabel('Computational time'), xlabel('Sample size')
+grid
+ylabel('Computational time'), xlabel('Length of time series (m)')
 title('Forecasting')
 % legend('cpu','gpu','location','bestoutside'),
+print -depsc simu22_na_100
 
 
 % Figure 3
@@ -64,8 +86,10 @@ b(2).CData(1:3,:)=0.8*ones(3,3);
 xticklabels({'Parallelization','Optimization','Forecasting'})
 ylabel('Computational time')
 legend('CPU','GPU')
-str=sprintf('Sample size=%d',m(12));
-text(2.5,1,str)
+str=sprintf('m=%d',m(12));
+text(3,2.4,str)
+print -depsc simu222_na_100
+
 %Sample size m(12)=4000 (length time series)
 
 % str1=num2str(sum(tiempocpu(12,:)))

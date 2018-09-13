@@ -2,10 +2,11 @@
 %exponential smoothing forecasting technique:
 %Optimization grid and search
 %Divide the total sample in a windows size and optimize at every step
+%Second simulation in the working paper (big single time series)
 
 %Author: Juan R. Trapero - UCLM.
 %Version: 2
-%Date: 06/09/2018
+%Date: 13/09/2018
 %Comments: parallelize forecasting and sliding window approach
 clearvars
 %% Define variables
@@ -25,10 +26,6 @@ for l=1:length(m)
         %% Parallelization (In CPU it's just prepare the data, nothing else!)
         t=tic();
         trainset=round(0.5*length(demand)); %50% for training set (hold-in sample)
-%         traindata=nan(trainset,trainset-h); %Rest of data for test set (hold-out sample)
-%         for i=1:trainset
-%             traindata(:,i)=demand(i:trainset+i-1,1);
-%         end
         traindata=hankel(demand(1:trainset),demand(trainset:end-h));
         cputime(l,ll,1)=toc(t); %Necessary time for the "parallelization"
         %% Optimization (Serial CPU)   
@@ -47,7 +44,7 @@ for l=1:length(m)
             k=k+1;
         end
         cputime(l,ll,3)=toc(t); %Required time for the forecasting
-        sprintf( 'Experimento %d (porcentaje)  tiempo CPU= %1.3fsecs',...
+        sprintf( 'Experiment %d (percentage)  time CPU= %1.3fsecs',...
             l/length(m)*100,cputime(l,ll,2)) %show the times in the screen
         resultscpu=sprintf('tiempocpu%d.mat',na);
         save(resultscpu,'cputime','n','m','na') 
@@ -111,10 +108,4 @@ end
 resultsgpu=sprintf('tiempogpu%d.mat',na);
 save(resultsgpu,'naiveGPUTime','n','m','na') 
 
-%         sprintf( '%1.3fsecs (naive GPU) = %1.1fx faster',...
-%             naiveGPUTime(l,ll,2), cputime(l,ll,2)/naiveGPUTime(l,ll,2) )
-    %     figure
-    %     plot([demand(2:end,3),forecast(1:end-1,3)])
-    %     legend('real','forecast')
-    %     title('GPU computing')
 

@@ -3,12 +3,12 @@
 %that are assumed to be independent one of each other.
 %exponential smoothing forecasting technique:
 %Optimization grid and search
-%Divide the total sample in a windows size and optimize at every step
+%First simulation in the working paper
 
 %Author: Juan R. Trapero - UCLM.
 %Version: 2
-%Date: 06/09/2018
-%Comments: parallelize forecasting and sliding window approach
+%Date: 19/09/2018
+%Comments: parallelize forecasting
 clearvars
 %% Define variables
 n=[1e2 1e3:1e3:1e4];  %Number of skus
@@ -45,8 +45,8 @@ for l=1:length(m)
             f=filter(b,a,demand(trainset:end,j),demand(1,j),1); %Forecast
         end
         cputime(l,ll,3)=toc(t); %Required time for the forecasting
-        sprintf( 'Experimento %d (porcentaje)  tiempo CPU= %1.3fsecs',...
-            (l*ll)/(length(m)*length(n))*100,cputime(l,ll,2)) %show the times in the screen
+        sprintf( 'Experiment %d (percentage)  time CPU= %1.3fsecs',...
+            (l*ll)/(length(m)*length(n))*100,cputime(l,ll,2)) %show times in the screen
         resultscpu=sprintf('simu1tiempocpu%d.mat',na);
         save(resultscpu,'cputime') 
     end
@@ -104,10 +104,4 @@ end
 resultsgpu=sprintf('simu1tiempogpu%d.mat',na);
 save(resultsgpu,'naiveGPUTime') 
 
-%         sprintf( '%1.3fsecs (naive GPU) = %1.1fx faster',...
-%             naiveGPUTime(l,ll,2), cputime(l,ll,2)/naiveGPUTime(l,ll,2) )
-    %     figure
-    %     plot([demand(2:end,3),forecast(1:end-1,3)])
-    %     legend('real','forecast')
-    %     title('GPU computing')
 

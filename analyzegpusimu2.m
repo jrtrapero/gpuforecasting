@@ -8,14 +8,14 @@
 
 %% Load  the previous results
 clearvars
-%See for na??
-na=100;
+load initialvar
 load(sprintf('tiempocpu%d.mat',na))
 load(sprintf('tiempogpu%d.mat',na))
 
 
 %% Article figures
-%suma de tiempos
+% Reduce in one dimension that is redundant and 
+% calculate the sum of times for CPU and GPU
 tiempocpu=squeeze(cputime);
 tiempogpu=squeeze(naiveGPUTime);
 sumcpu=sum(tiempocpu,2);
@@ -89,13 +89,6 @@ legend('CPU','GPU')
 str=sprintf('m=%d',m(12));
 text(3,2.4,str)
 print -depsc simu222_na_100
-
-%Sample size m(12)=4000 (length time series)
-
-% str1=num2str(sum(tiempocpu(12,:)))
-% str2=num2str(sum(tiempogpu(12,:)))
-% text(2.5,0.8,str1)
-% text(2.5,0.6,str2)
 
 
 

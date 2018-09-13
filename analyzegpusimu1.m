@@ -3,7 +3,7 @@
 
 %Author: Juan R. Trapero - UCLM.
 %Version: 1
-%Date: 11/09/2018
+%Date: 13/09/2018
 %Comments: Just plot the results for publishing purposes
 
 %% Load  the previous results
@@ -14,7 +14,8 @@ load(sprintf('simu1tiempogpu%d.mat',na))
 
 
 %% Article figures
-%suma de tiempos
+% Reduce in one dimension that is redundant and 
+% calculate the sum of times for CPU and GPU
 tiempocpu=squeeze(cputime);
 tiempogpu=squeeze(naiveGPUTime);
 sumcpu=sum(tiempocpu,2);
@@ -55,7 +56,6 @@ title('Forecasting')
 print -depsc simu11_na_100
 
 %Figure 3
-
 %Do it for a determined sample size as an example.
 figure
 b=bar([tiempocpu(9,:)' tiempogpu(9,:)'],'FaceColor','flat');
